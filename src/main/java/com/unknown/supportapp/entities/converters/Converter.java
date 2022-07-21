@@ -6,6 +6,8 @@ import com.unknown.supportapp.dto.ownedProduct.OwnedProductDto;
 import com.unknown.supportapp.dto.product.ProductDto;
 import com.unknown.supportapp.dto.ticket.TicketDto;
 import com.unknown.supportapp.entities.*;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,43 +18,30 @@ import java.util.List;
 @Component
 public class Converter {
 
-    @Autowired
     private PersistenceUtil persistenceUtil;
 
+    private ModelMapper modelMapper;
+
+
+    @Autowired
+    public Converter(PersistenceUtil persistenceUtil, ModelMapper modelMapper) {
+        this.persistenceUtil = persistenceUtil;
+        this.modelMapper = modelMapper;
+    }
+
     public AccountDto convertAccountToDto(Account entity) {
-        AccountDto accountDto = new AccountDto();
+        TypeMap<Account, AccountDto> typeMap = modelMapper.typeMap(Account.class, AccountDto.class);
 
-        if (entity.getId() != null) {
-            accountDto.setId(entity.getId());
-        }
-
-        if (entity.getEmail() != null) {
-            accountDto.setEmail(entity.getEmail());
-        }
-        if (entity.getPassword() != null) {
-            accountDto.setPassword(entity.getPassword());
-        }
-        if (entity.getName() != null) {
-            accountDto.setName(entity.getName());
-        }
-        if (entity.getSurname() != null) {
-            accountDto.setSurname(entity.getSurname());
-        }
-        if (entity.getPhoneNumber() != null) {
-            accountDto.setPhoneNumber(entity.getPhoneNumber());
-        }
-        if (entity.getDateOfBirth() != null) {
-            accountDto.setDateOfBirth(entity.getDateOfBirth());
+        if (!persistenceUtil.isLoaded(entity, "ownedProducts")) {
+            typeMap.addMappings(mapping -> mapping.skip(AccountDto::setOwnedProducts));
         }
 
-
-      /*  if (persistenceUtil.isLoaded(entity, "ownedProducts")) {
-            accountDto.setOwnedProducts(convertOwnedProductToDto(entity.getOwnedProducts()));
+        if (!persistenceUtil.isLoaded(entity, "tickets")) {
+            typeMap.addMappings(mapping -> mapping.skip(AccountDto::setTickets));
         }
-
-        if (persistenceUtil.isLoaded(entity, "tickets")) {
-            accountDto.setTickets(convertTicketToDto(entity.getTickets()));
-        }*/
+        AccountDto accountDto = modelMapper.map(entity, AccountDto.class);
+        typeMap.addMappings(mapping -> mapping.map(Account::getOwnedProducts, AccountDto::setOwnedProducts));
+        typeMap.addMappings(mapping -> mapping.map(Account::getTickets, AccountDto::setTickets));
 
         return accountDto;
     }
@@ -66,135 +55,30 @@ public class Converter {
     }
 
     public Account convertAccountToEntity(AccountDto accountDto) {
-        Account accountEntity = new Account();
-
-        if (accountDto.getId() != null) {
-            accountEntity.setId(accountDto.getId());
-        }
-
-        if (accountDto.getEmail() != null) {
-            accountEntity.setEmail(accountDto.getEmail());
-        }
-        if (accountDto.getPassword() != null) {
-            accountEntity.setPassword(accountDto.getPassword());
-        }
-        if (accountDto.getName() != null) {
-            accountEntity.setName(accountDto.getName());
-        }
-        if (accountDto.getSurname() != null) {
-            accountEntity.setSurname(accountDto.getSurname());
-        }
-        if (accountDto.getPhoneNumber() != null) {
-            accountEntity.setPhoneNumber(accountDto.getPhoneNumber());
-        }
-        if (accountDto.getDateOfBirth() != null) {
-            accountEntity.setDateOfBirth(accountDto.getDateOfBirth());
-        }
-
-        if (accountDto.getOwnedProducts() != null) {
-            accountEntity.setOwnedProducts(convertOwnedProductToEntity(accountDto.getOwnedProducts()));
-        }
-
-
-        if (accountDto.getTickets() != null) {
-            accountEntity.setTickets(convertTicketToEntity(accountDto.getTickets()));
-        }
-        return accountEntity;
+        return modelMapper.map(accountDto, Account.class);
     }
 
     public Manager convertManagerToEntity(ManagerDto dto) {
-        Manager entity = new Manager();
-
-        if (dto.getId() != null) {
-            entity.setId(dto.getId());
-        }
-
-        if (dto.getEmail() != null) {
-            entity.setEmail(dto.getEmail());
-        }
-        if (dto.getPassword() != null) {
-            entity.setPassword(dto.getPassword());
-        }
-
-        if (dto.getManagedTickets() != null) {
-            entity.setManagedTickets(convertTicketToEntity(dto.getManagedTickets()));
-        }
-        return entity;
+        return modelMapper.map(dto, Manager.class);
     }
 
     public ManagerDto convertManagerToDto(Manager entity) {
-        ManagerDto dto = new ManagerDto();
+        TypeMap<Manager, ManagerDto> typeMap = modelMapper.typeMap(Manager.class, ManagerDto.class);
 
-        if (entity.getId() != null) {
-            dto.setId(entity.getId());
+        if (!persistenceUtil.isLoaded(entity, "managedTickets")) {
+            typeMap.addMappings(mapping -> mapping.skip(ManagerDto::setManagedTickets));
         }
-
-        if (entity.getEmail() != null) {
-            dto.setEmail(entity.getEmail());
-        }
-        if (entity.getPassword() != null) {
-            dto.setPassword(entity.getPassword());
-        }
-        /*if (persistenceUtil.isLoaded(entity, "managedTickets")) {
-            dto.setManagedTickets(convertTicketToDto(entity.getManagedTickets()));
-        }*/
-        return dto;
+        ManagerDto managerDto = modelMapper.map(entity, ManagerDto.class);
+        typeMap.addMappings(mapping -> mapping.map(Manager::getManagedTickets, ManagerDto::setManagedTickets));
+        return managerDto;
     }
 
     public OwnedProduct convertOwnedProductToEntity(OwnedProductDto dto) {
-        OwnedProduct ownedProduct = new OwnedProduct();
-
-        if (dto.getId() != null) {
-            ownedProduct.setId(dto.getId());
-        }
-/*
-        if (dto.getOwnerId() != null) {
-            ownedProduct.setOwnerId(dto.getOwnerId());
-        }
-
-        if (dto.getType() != null) {
-            ownedProduct.setType(dto.getType());
-        }
-        if (dto.getModel() != null) {
-            ownedProduct.setModel(dto.getModel());
-        }
-        if (dto.getSerialNumber() != null) {
-            ownedProduct.setSerialNumber(dto.getSerialNumber());
-        }*/
-
-        if (dto.getOwner() != null) {
-            ownedProduct.setOwner(convertAccountToEntity(dto.getOwner()));
-        }
-
-        return ownedProduct;
+        return modelMapper.map(dto, OwnedProduct.class);
     }
 
     public OwnedProductDto convertOwnedProductToDto(OwnedProduct entity) {
-        OwnedProductDto dto = new OwnedProductDto();
-
-        if (entity.getId() != null) {
-            dto.setId(entity.getId());
-        }
-
-        /*if (entity.getOwnerId() != null) {
-            dto.setOwnerId(entity.getOwnerId());
-        }
-
-        if (entity.getType() != null) {
-            dto.setType(entity.getType());
-        }
-        if (entity.getModel() != null) {
-            dto.setModel(entity.getModel());
-        }
-        if (entity.getSerialNumber() != null) {
-            dto.setSerialNumber(entity.getSerialNumber());
-        }*/
-
-       /* if (persistenceUtil.isLoaded(entity, "owner")) {
-            dto.setOwner(convertAccountToDto(entity.getOwner()));
-        }*/
-
-        return dto;
+        return modelMapper.map(entity, OwnedProductDto.class);
     }
 
     public List<OwnedProductDto> convertOwnedProductToDto(List<OwnedProduct> entityList) {
@@ -216,19 +100,7 @@ public class Converter {
     }
 
     public ProductDto convertProductToDto(Product entity) {
-        ProductDto productDto = new ProductDto();
-
-        if (entity.getId() != null) {
-            productDto.setId(entity.getId());
-        }
-
-        if (entity.getType() != null) {
-            productDto.setType(entity.getType());
-        }
-        if (entity.getModel() != null) {
-            productDto.setModel(entity.getModel());
-        }
-        return productDto;
+        return modelMapper.map(entity, ProductDto.class);
     }
 
     public List<ProductDto> convertProductToDto(List<Product> entityList) {
@@ -242,41 +114,7 @@ public class Converter {
     }
 
     public TicketDto convertTicketToDto(Ticket entity) {
-        TicketDto dto = new TicketDto();
-
-        dto.setStatus(entity.isStatus());
-
-        if (entity.getId() != null) {
-            dto.setId(entity.getId());
-        }
-/*
-        if (entity.getStarterId() != null) {
-            dto.setStarterId(entity.getStarterId());
-        }
-
-        if (entity.getManagerId() != null) {
-            dto.setManagerId(entity.getManagerId());
-        }
-
-        if (entity.getProductId() != null) {
-            dto.setProductId(entity.getProductId());
-        }*/
-
-        if (entity.getTheme() != null) {
-            dto.setTheme(entity.getTheme());
-        }
-        if (entity.getText() != null) {
-            dto.setText(entity.getText());
-        }
-
-       /* if (persistenceUtil.isLoaded(entity, "starter")) {
-            dto.setStarter(convertAccountToDto(entity.getStarter()));
-        }
-
-        if (persistenceUtil.isLoaded(entity, "manager")) {
-            dto.setManager(convertManagerToDto(entity.getManager()));
-        }*/
-        return dto;
+       return modelMapper.map(entity, TicketDto.class);
     }
 
     public List<TicketDto> convertTicketToDto(List<Ticket> entityList) {
@@ -300,40 +138,6 @@ public class Converter {
     }
 
     public Ticket convertTicketToEntity(TicketDto dto) {
-        Ticket entity = new Ticket();
-
-        entity.setStatus(dto.isStatus());
-
-        if (dto.getId() != null) {
-            entity.setId(dto.getId());
-        }
-
-       /* if (dto.getStarterId() != null) {
-            entity.setStarterId(dto.getStarterId());
-        }
-
-        if (dto.getManagerId() != null) {
-            entity.setManagerId(dto.getManagerId());
-        }
-
-        if (dto.getProductId() != null) {
-            entity.setProductId(dto.getProductId());
-        }*/
-
-        if (dto.getTheme() != null) {
-            entity.setTheme(dto.getTheme());
-        }
-        if (dto.getText() != null) {
-            entity.setText(dto.getText());
-        }
-
-        if (dto.getStarter() != null) {
-            entity.setStarter(convertAccountToEntity(dto.getStarter()));
-        }
-        if (dto.getManager() != null) {
-            entity.setManager(convertManagerToEntity(dto.getManager()));
-        }
-
-        return entity;
+        return modelMapper.map(dto, Ticket.class);
     }
 }

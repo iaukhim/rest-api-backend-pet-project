@@ -6,7 +6,6 @@ import com.unknown.supportapp.dao.ProductDao;
 import com.unknown.supportapp.dto.product.ProductDto;
 import com.unknown.supportapp.entities.Product;
 import com.unknown.supportapp.entities.converters.Converter;
-import com.unknown.supportapp.entities.converters.ProductConverter;
 import com.unknown.supportapp.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

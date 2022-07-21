@@ -5,7 +5,6 @@ import com.unknown.supportapp.dao.TicketDao;
 import com.unknown.supportapp.dto.ticket.TicketDto;
 import com.unknown.supportapp.entities.Ticket;
 import com.unknown.supportapp.entities.converters.Converter;
-import com.unknown.supportapp.entities.converters.TicketConverter;
 import com.unknown.supportapp.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

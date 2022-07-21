@@ -5,7 +5,6 @@ import com.unknown.supportapp.dao.OwnedProductDao;
 import com.unknown.supportapp.dto.ownedProduct.OwnedProductDto;
 import com.unknown.supportapp.entities.OwnedProduct;
 import com.unknown.supportapp.entities.converters.Converter;
-import com.unknown.supportapp.entities.converters.OwnedProductConverter;
 import com.unknown.supportapp.services.OwnedProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

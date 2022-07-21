@@ -5,7 +5,6 @@ import com.unknown.supportapp.dao.ManagerDao;
 import com.unknown.supportapp.dto.manager.ManagerDto;
 import com.unknown.supportapp.entities.Manager;
 import com.unknown.supportapp.entities.converters.Converter;
-import com.unknown.supportapp.entities.converters.ManagerConverter;
 import com.unknown.supportapp.services.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

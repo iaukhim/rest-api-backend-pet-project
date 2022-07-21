@@ -3,7 +3,6 @@ package com.unknown.supportapp.services.impl;
 import com.unknown.supportapp.dao.AccountDao;
 import com.unknown.supportapp.dto.acccount.AccountDto;
 import com.unknown.supportapp.entities.Account;
-import com.unknown.supportapp.entities.converters.AccountConverter;
 import com.unknown.supportapp.entities.converters.Converter;
 import com.unknown.supportapp.services.AccountService;
 import com.unknown.supportapp.services.mail.MailService;

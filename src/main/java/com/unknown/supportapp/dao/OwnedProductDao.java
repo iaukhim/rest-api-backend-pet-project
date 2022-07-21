@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface OwnedProductDao {
 
-    void saveProduct(OwnedProduct product);
+    OwnedProduct saveProduct(OwnedProduct product);
 
     List<OwnedProduct> loadUsersProducts (String email);
 

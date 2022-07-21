@@ -4,7 +4,6 @@ package com.unknown.supportapp.dao.mysql;
 import com.unknown.supportapp.dao.ManagerDao;
 import com.unknown.supportapp.entities.Manager;
 import com.unknown.supportapp.exceptions.NoSuchEntityException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -37,6 +36,11 @@ public class MySqlManagerDao implements ManagerDao {
     }
 
     @Override
+    public Manager save(Manager manager) {
+        return entityManager.merge(manager);
+    }
+
+    @Override
     public Long loadIdByEmail(String email) {
         Long id;
 
@@ -48,5 +52,18 @@ public class MySqlManagerDao implements ManagerDao {
             throw new NoSuchEntityException("Entity with email does not exist");
         }
         return id;
+    }
+
+    @Override
+    public Manager loadByEmail(String email) {
+        TypedQuery<Manager> query = entityManager.createQuery("select m from Manager as m WHERE m.email = :email", Manager.class);
+        query.setParameter("email", email);
+        Manager manager;
+        try {
+            manager = query.getSingleResult();
+        } catch (NoResultException e) {
+            throw new NoSuchEntityException("Entity with such email does not exist");
+        }
+        return manager;
     }
 }

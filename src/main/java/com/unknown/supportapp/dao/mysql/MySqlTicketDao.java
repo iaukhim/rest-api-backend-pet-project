@@ -18,10 +18,6 @@ public class MySqlTicketDao implements TicketDao {
     public MySqlTicketDao() {
     }
 
-    public MySqlTicketDao(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
     @Override
     public List<Ticket> loadAll() {
         TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t", Ticket.class);
@@ -30,7 +26,7 @@ public class MySqlTicketDao implements TicketDao {
 
     @Override
     public List<Ticket> loadUserTickets(Long userId) {
-        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.userId = :userId", Ticket.class);
+        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.starter.id = :userId", Ticket.class);
         query.setParameter("userId", userId);
 
         return query.getResultList();
@@ -48,27 +44,27 @@ public class MySqlTicketDao implements TicketDao {
 
     @Override
     public List<Ticket> loadUserOpenedTickets(Long userId) {
-        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.status = true AND t.starterId = :userId", Ticket.class);
+        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.status = true AND t.starter.id = :userId", Ticket.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
 
     @Override
     public List<Ticket> loadUserClosedTickets(Long userId) {
-        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.status = false AND t.starterId = :userId", Ticket.class);
+        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.status = false AND t.starter.id = :userId", Ticket.class);
         query.setParameter("userId", userId);
         return query.getResultList();
     }
 
     @Override
     public List<Ticket> loadUnAssignedTickets() {
-        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.managerId = 0", Ticket.class);
+        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.manager is null", Ticket.class);
         return query.getResultList();
     }
 
     @Override
     public List<Ticket> loadManagedTickets(Long managerId) {
-        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.managerId = :managerId", Ticket.class);
+        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t WHERE t.manager.id = :managerId", Ticket.class);
         query.setParameter("managerId", managerId);
         return query.getResultList();
     }

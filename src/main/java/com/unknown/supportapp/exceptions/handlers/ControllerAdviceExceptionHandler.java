@@ -17,6 +17,11 @@ public class ControllerAdviceExceptionHandler {
     public ControllerAdviceExceptionHandler() {
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Response> handleException(Exception e, HttpServletRequest request){
+        Response response = new Response(new Date(System.currentTimeMillis()), HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), request.getRequestURI());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @ExceptionHandler(CausedByUserException.class)
     public ResponseEntity<Response> handleException(CausedByUserException e, HttpServletRequest request){
         Response response = new Response(new Date(System.currentTimeMillis()), e.getHttpStatus().toString(), e.getMessage(), request.getRequestURI());

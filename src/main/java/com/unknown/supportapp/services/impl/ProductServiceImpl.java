@@ -5,6 +5,7 @@ package com.unknown.supportapp.services.impl;
 import com.unknown.supportapp.dao.ProductDao;
 import com.unknown.supportapp.dto.product.ProductDto;
 import com.unknown.supportapp.entities.Product;
+import com.unknown.supportapp.entities.converters.Converter;
 import com.unknown.supportapp.entities.converters.ProductConverter;
 import com.unknown.supportapp.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,27 +20,27 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductDao productDao;
 
-    private ProductConverter productConverter;
+    private Converter converter;
 
     public ProductServiceImpl() {
     }
 
     @Autowired
-    public ProductServiceImpl(ProductDao productDao, ProductConverter productConverter) {
+    public ProductServiceImpl(ProductDao productDao, Converter converter) {
         this.productDao = productDao;
-        this.productConverter = productConverter;
+        this.converter = converter;
     }
 
     @Override
     public List<ProductDto> loadProductsByType(String type) {
         List<Product> products = productDao.loadProductsByType(type);
-        return productConverter.convertToDtoList(products);
+        return converter.convertProductToDto(products);
     }
 
     @Override
     public List<ProductDto> loadAllProducts() {
         List<Product> products = productDao.loadAllProducts();
-        return productConverter.convertToDtoList(products);
+        return converter.convertProductToDto(products);
     }
 
     @Override

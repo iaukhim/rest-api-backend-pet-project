@@ -15,4 +15,6 @@ public interface ProductDao {
 
     Long loadIdByModel(String model);
 
+    Product save (Product product);
+
 }

@@ -5,10 +5,16 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.unknown.supportapp.dto.ownedProduct.OwnedProductDto;
+import com.unknown.supportapp.dto.ticket.TicketDto;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class AccountDto {
 
     private String email;
@@ -23,13 +29,18 @@ public class AccountDto {
 
     private String phoneNumber;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<OwnedProductDto> ownedProducts;
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<TicketDto> tickets;
+
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
-
-    public AccountDto() {
-    }
 
     public AccountDto(String email, String password) {
         this.email = email;
@@ -46,87 +57,6 @@ public class AccountDto {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    @Override
-    public String toString() {
-        return "AccountDto{" +
-                "email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AccountDto that = (AccountDto) o;
-        return Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(surname, that.surname) && Objects.equals(phoneNumber, that.phoneNumber) && Objects.equals(dateOfBirth, that.dateOfBirth);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(email, password, id, name, surname, phoneNumber, dateOfBirth);
-    }
 }
 
 

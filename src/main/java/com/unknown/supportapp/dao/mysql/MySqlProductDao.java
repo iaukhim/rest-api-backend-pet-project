@@ -61,4 +61,9 @@ public class MySqlProductDao implements ProductDao {
         TypedQuery<String> query = entityManager.createQuery("SELECT distinct p.type FROM Product as p", String.class);
         return query.getResultList();
     }
+
+    @Override
+    public Product save(Product product) {
+        return entityManager.merge(product);
+    }
 }

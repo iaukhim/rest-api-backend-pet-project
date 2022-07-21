@@ -24,20 +24,12 @@ public class TicketController {
         ticketService.update(ticketDto);
     }
 
-    @PutMapping("/{id}/{managerId}")
-    public void setManagerId(@PathVariable Long managerId, @PathVariable Long id){
-        TicketDto ticketDto = new TicketDto();
-        ticketDto.setManagerId(managerId);
-        ticketDto.setId(id);
-        ticketService.setManagerId(ticketDto);
-    }
-
     @PostMapping("")
     public void saveTicket(@RequestBody TicketDto ticketDto){
         ticketService.save(ticketDto);
     }
 
-    @GetMapping("/{starterId}")
+    @GetMapping("/{starterId}/")
     public List<TicketDto> loadUserTickets(@PathVariable Long userId){
         return ticketService.loadUserTickets(userId);
     }

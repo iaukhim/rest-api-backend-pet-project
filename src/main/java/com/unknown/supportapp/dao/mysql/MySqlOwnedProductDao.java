@@ -27,15 +27,15 @@ public class MySqlOwnedProductDao implements OwnedProductDao {
 
     @Override
     public List<OwnedProduct> loadUsersProducts(String email) {
-        TypedQuery<OwnedProduct> query = entityManager.createQuery("SELECT o FROM OwnedProduct as o WHERE o.ownerId IN (SELECT a.id FROM Account as a WHERE a.email = :email)", OwnedProduct.class);
+        TypedQuery<OwnedProduct> query = entityManager.createQuery("SELECT o FROM OwnedProduct as o WHERE o.owner.id IN (SELECT a.id FROM Account as a WHERE a.email = :email)", OwnedProduct.class);
         query.setParameter("email", email);
         List<OwnedProduct> resultList = query.getResultList();
         return resultList;
     }
 
     @Override
-    public void saveProduct(OwnedProduct product) {
-        entityManager.merge(product);
+    public OwnedProduct saveProduct(OwnedProduct product) {
+        return entityManager.merge(product);
     }
     @Override
     public boolean changeSerial(String oldValue, String newValue) {
@@ -86,6 +86,6 @@ public class MySqlOwnedProductDao implements OwnedProductDao {
     @Override
     public String loadModelById(Long id) {
         OwnedProduct ownedProduct = loadById(id);
-        return ownedProduct.getModel();
+        return ownedProduct.getProduct().getModel();
     }
 }

@@ -2,15 +2,22 @@ package com.unknown.supportapp.entities.converters;
 
 import com.unknown.supportapp.dto.ownedProduct.OwnedProductDto;
 import com.unknown.supportapp.entities.OwnedProduct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.PersistenceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class OwnedProductConverter {
 
-    public OwnedProductConverter() {
+    private PersistenceUtil persistenceUtil;
+    private AccountConverter accountConverter;
+    @Autowired
+    public OwnedProductConverter(PersistenceUtil persistenceUtil, AccountConverter accountConverter) {
+        this.persistenceUtil = persistenceUtil;
+        this.accountConverter = accountConverter;
     }
 
     public OwnedProduct convertToEntity(OwnedProductDto dto){
@@ -20,7 +27,7 @@ public class OwnedProductConverter {
             ownedProduct.setId(dto.getId());
         }
 
-        if(dto.getOwnerId()!= null){
+       /* if(dto.getOwnerId()!= null){
             ownedProduct.setOwnerId(dto.getOwnerId());
         }
 
@@ -32,7 +39,14 @@ public class OwnedProductConverter {
         }
         if(dto.getSerialNumber()!= null){
             ownedProduct.setSerialNumber(dto.getSerialNumber());
+        }*/
+
+
+        if(dto.getOwner()!= null){
+            ownedProduct.setOwner(accountConverter.convertToEntity(dto.getOwner()));
         }
+
+
         return ownedProduct;
     }
 
@@ -42,7 +56,7 @@ public class OwnedProductConverter {
         if(entity.getId()!= null){
             dto.setId(entity.getId());
         }
-
+/*
         if(entity.getOwnerId()!= null){
             dto.setOwnerId(entity.getOwnerId());
         }
@@ -55,7 +69,12 @@ public class OwnedProductConverter {
         }
         if(entity.getSerialNumber()!= null){
             dto.setSerialNumber(entity.getSerialNumber());
+        }*/
+
+        if(persistenceUtil.isLoaded(entity, "owner")){
+            dto.setOwner(accountConverter.convertToDto(entity.getOwner()));
         }
+
         return dto;
     }
 
@@ -66,5 +85,14 @@ public class OwnedProductConverter {
             dtoList.add(convertToDto(entity));
         }
         return dtoList;
+    }
+
+    public List<OwnedProduct> convertToEntityList(List<OwnedProductDto> dtoList){
+        List<OwnedProduct> entityList = new ArrayList<>();
+
+        for (OwnedProductDto dto: dtoList) {
+            entityList.add(convertToEntity(dto));
+        }
+        return entityList;
     }
 }

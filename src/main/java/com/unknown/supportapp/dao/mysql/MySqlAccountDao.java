@@ -3,6 +3,7 @@ package com.unknown.supportapp.dao.mysql;
 
 import com.unknown.supportapp.dao.AccountDao;
 import com.unknown.supportapp.entities.Account;
+import com.unknown.supportapp.entities.OwnedProduct;
 import com.unknown.supportapp.exceptions.NoSuchEntityException;
 import org.springframework.stereotype.Repository;
 
@@ -66,10 +67,7 @@ public class MySqlAccountDao implements AccountDao {
 
     @Override
     public void delete(Long id) {
-        Account account = entityManager.find(Account.class, id);
-        if(account == null){
-            throw new NoSuchEntityException("Entity with such id does not exist");
-        }
+        Account account = loadById(id);
         entityManager.remove(account);
     }
 

@@ -3,14 +3,21 @@ package com.unknown.supportapp.entities.converters;
 
 import com.unknown.supportapp.dto.acccount.AccountDto;
 import com.unknown.supportapp.entities.Account;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.PersistenceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class AccountConverter {
 
+    @Autowired
+    PersistenceUtil persistenceUtil;
+    private TicketConverter ticketConverter = new TicketConverter();
+
+    private OwnedProductConverter ownedProductConverter = new OwnedProductConverter(persistenceUtil, this);
     public AccountDto convertToDto(Account entity){
         AccountDto accountDto = new AccountDto();
 
@@ -36,6 +43,16 @@ public class AccountConverter {
         if(entity.getDateOfBirth() != null){
             accountDto.setDateOfBirth(entity.getDateOfBirth());
         }
+
+
+        if (persistenceUtil.isLoaded(entity, "ownedProducts1")) {
+            accountDto.setOwnedProducts(ownedProductConverter.convertToDtoList(entity.getOwnedProducts()));
+        }
+
+        if (persistenceUtil.isLoaded(entity, "tickets")) {
+            accountDto.setTickets(ticketConverter.convertToDtoList(entity.getTickets()));
+        }
+
         return accountDto;
     }
 
@@ -71,6 +88,15 @@ public class AccountConverter {
         }
         if(accountDto.getDateOfBirth() != null){
             accountEntity.setDateOfBirth(accountDto.getDateOfBirth());
+        }
+
+        if(accountDto.getOwnedProducts() != null){
+            accountEntity.setOwnedProducts(ownedProductConverter.convertToEntityList(accountDto.getOwnedProducts()));
+        }
+
+
+        if(accountDto.getTickets() != null){
+            accountEntity.setTickets(ticketConverter.convertToEntityList(accountDto.getTickets()));
         }
         return accountEntity;
     }

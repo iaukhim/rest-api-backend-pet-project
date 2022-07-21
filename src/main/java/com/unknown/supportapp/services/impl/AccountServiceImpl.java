@@ -4,6 +4,7 @@ import com.unknown.supportapp.dao.AccountDao;
 import com.unknown.supportapp.dto.acccount.AccountDto;
 import com.unknown.supportapp.entities.Account;
 import com.unknown.supportapp.entities.converters.AccountConverter;
+import com.unknown.supportapp.entities.converters.Converter;
 import com.unknown.supportapp.services.AccountService;
 import com.unknown.supportapp.services.mail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,23 +20,22 @@ public class AccountServiceImpl implements AccountService {
 
     private AccountDao accountDao;
 
-    private AccountConverter accountConverter;
-
+    private Converter converter;
     private MailService mailService;
 
     public AccountServiceImpl() {
     }
 
     @Autowired
-    public AccountServiceImpl(AccountDao accountDao, AccountConverter accountConverter, MailService mailService) {
+    public AccountServiceImpl(AccountDao accountDao, Converter converter, MailService mailService) {
         this.accountDao = accountDao;
-        this.accountConverter = accountConverter;
+        this.converter = converter;
         this.mailService = mailService;
     }
 
     @Override
     public void update(AccountDto accountDto) {
-        Account account = accountConverter.convertToEntity(accountDto);
+        Account account = converter.convertAccountToEntity(accountDto);
         accountDao.update(account);
     }
 
@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void saveAccount(AccountDto accountDto) {
-        Account account = accountConverter.convertToEntity(accountDto);
+        Account account = converter.convertAccountToEntity(accountDto);
         accountDao.save(account);
     }
 
@@ -54,20 +54,20 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto loadByEmail(String email) {
         Account account = accountDao.loadByEmail(email);
 
-        AccountDto accountDto = accountConverter.convertToDto(account);
+        AccountDto accountDto = converter.convertAccountToDto(account);
         return accountDto;
     }
 
     @Override
     public AccountDto loadById(Long id) {
         Account account = accountDao.loadById(id);
-        return accountConverter.convertToDto(account);
+        return converter.convertAccountToDto(account);
     }
 
     @Override
     public List<AccountDto> loadAll() {
         List<Account> entities = accountDao.loadAll();
-        return accountConverter.convertToDto(entities);
+        return converter.convertAccountToDto(entities);
     }
 
 
@@ -98,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void changePassword(AccountDto accountDto) {
-        Account account = accountConverter.convertToEntity(accountDto);
+        Account account = converter.convertAccountToEntity(accountDto);
         accountDao.changePassword(account);
 
     }

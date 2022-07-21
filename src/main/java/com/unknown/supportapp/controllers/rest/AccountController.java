@@ -64,11 +64,7 @@ public class AccountController {
     @GetMapping("/{id}")
     public AccountDto getAccountById(@PathVariable Long id) {
         AccountDto accountDto = accountService.loadById(id);
-        if (accountDto == null) {
-            throw new RuntimeException("no such account");
-        } else {
-            return accountDto;
-        }
+        return accountDto;
     }
 
     @PutMapping("/change-password")
@@ -82,7 +78,7 @@ public class AccountController {
 
     @GetMapping("/{email}/owned-products")
     public List<OwnedProductDto> loadUsersProducts(@PathVariable String email){
-        return ownedProductService.loadUsersProducts(email);
+        return ownedProductService.loadUsersProducts("new_account@mail.com");
     }
 
     @GetMapping("/id/by-email/{email}")

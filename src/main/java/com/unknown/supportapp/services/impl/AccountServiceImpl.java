@@ -40,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void delete(Long id) {
-        accountDao.delete(id);
+        accountDao.deleteById(id);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDto loadById(Long id) {
-        Account account = accountDao.loadById(id);
+        Account account = accountDao.findById(id);
         return converter.convertAccountToDto(account);
     }
 

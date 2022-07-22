@@ -29,9 +29,6 @@ public class DbInit implements ApplicationRunner {
     @Autowired
     private TicketDao ticketDao;
 
-    @Autowired
-    private AbstractDao abstractDao;
-
     @Transactional
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -44,16 +41,16 @@ public class DbInit implements ApplicationRunner {
         Product monitor = productDao.save(new Product("monitor", "UltraGear 24GN600-B"));
         Product printer = productDao.save(new Product("printer", "LaserJet Pro M28a"));
 
-        OwnedProduct ownedLaptop = new OwnedProduct(laptop, "serial-number", accountDao.loadById(1L));
+        OwnedProduct ownedLaptop = new OwnedProduct(laptop, "serial-number", accountDao.findById(1L));
         OwnedProduct ownedProduct = ownedProductDao.saveProduct(ownedLaptop);
         OwnedProduct ownedSmartphone = new OwnedProduct();
         ownedSmartphone.setProduct(smartphone);
         ownedSmartphone.setSerialNumber("abc");
-        Account account = accountDao.loadById(1L);
+        Account account = accountDao.findById(1L);
         account.addOwnedProduct(ownedSmartphone);
         accountDao.update(account);
-        Ticket ticket = new Ticket(ownedProduct, "broken laptop", "something went wrong", true, accountDao.loadById(1L), managerDao.loadByEmail("manager_mail@mai.com"));
-        Ticket ticket1 = new Ticket(ownedProduct, "broken laptop", "something went wrong", true, accountDao.loadById(1L), null);
+        Ticket ticket = new Ticket(ownedProduct, "broken laptop", "something went wrong", true, accountDao.findById(1L), managerDao.loadByEmail("manager_mail@mai.com"));
+        Ticket ticket1 = new Ticket(ownedProduct, "broken laptop", "something went wrong", true, accountDao.findById(1L), null);
         ticketDao.save(ticket);
         ticketDao.save(ticket1);
     }

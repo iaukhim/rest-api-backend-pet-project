@@ -3,7 +3,6 @@ package com.unknown.supportapp.dao.mysql;
 
 import com.unknown.supportapp.dao.AccountDao;
 import com.unknown.supportapp.entities.Account;
-import com.unknown.supportapp.entities.OwnedProduct;
 import com.unknown.supportapp.exceptions.NoSuchEntityException;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +10,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Repository
-public class MySqlAccountDao implements AccountDao {
+public class MySqlAccountDao extends MySqlAbstractDao<Account> implements AccountDao {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -20,8 +19,10 @@ public class MySqlAccountDao implements AccountDao {
 
     }
 
-    public MySqlAccountDao(EntityManager entityManager) {
-        this.entityManager = entityManager;
+
+    @Override
+    public Class<Account> getClazz() {
+        return Account.class;
     }
 
     @Override
@@ -40,12 +41,6 @@ public class MySqlAccountDao implements AccountDao {
     }
 
     @Override
-    public List<Account> loadAll() {
-        TypedQuery<Account> query = entityManager.createQuery("select a from Account as a", Account.class);
-        return query.getResultList();
-    }
-
-    @Override
     public Account loadByEmail(String email) {
         TypedQuery<Account> query = entityManager.createQuery("select a from Account as a where a.email = :email", Account.class);
         query.setParameter("email", email);
@@ -55,22 +50,6 @@ public class MySqlAccountDao implements AccountDao {
             throw new NoSuchEntityException("Entity with such email does not exist");
         }
     }
-
-    @Override
-    public Account loadById(Long id) {
-        Account account = entityManager.find(Account.class, id);
-        if(account == null){
-            throw new NoSuchEntityException("Entity with such id does not exist");
-        }
-        return account;
-    }
-
-    @Override
-    public void delete(Long id) {
-        Account account = loadById(id);
-        entityManager.remove(account);
-    }
-
     @Override
     public void save(Account account) {
         entityManager.persist(account);

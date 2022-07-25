@@ -4,8 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@MappedSuperclass
 @NoArgsConstructor
 @Data
 public abstract class AbstractEntity {
@@ -15,7 +14,7 @@ public abstract class AbstractEntity {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
 }

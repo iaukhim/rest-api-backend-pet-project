@@ -2,7 +2,7 @@ package com.unknown.supportapp.dao;
 
 import com.unknown.supportapp.entities.Manager;
 
-public interface ManagerDao {
+public interface ManagerDao extends AbstractDao<Manager> {
 
     boolean login(Manager manager);
 
@@ -10,5 +10,4 @@ public interface ManagerDao {
 
     Manager loadByEmail(String email);
 
-    Manager save(Manager manager);
 }

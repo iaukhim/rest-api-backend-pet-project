@@ -12,13 +12,10 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
-public class MySqlProductDao implements ProductDao {
+public class MySqlProductDao extends MySqlAbstractDao<Product> implements ProductDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    public MySqlProductDao() {
-    }
 
     public MySqlProductDao(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -51,19 +48,14 @@ public class MySqlProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> loadAllProducts() {
-        TypedQuery<Product> query = entityManager.createQuery("SELECT p FROM Product as p", Product.class);
-        return query.getResultList();
-    }
-
-    @Override
     public List<String> loadAllProductTypes() {
         TypedQuery<String> query = entityManager.createQuery("SELECT distinct p.type FROM Product as p", String.class);
         return query.getResultList();
     }
 
     @Override
-    public Product save(Product product) {
-        return entityManager.merge(product);
+    Class<Product> getClazz() {
+        return Product.class;
     }
+
 }

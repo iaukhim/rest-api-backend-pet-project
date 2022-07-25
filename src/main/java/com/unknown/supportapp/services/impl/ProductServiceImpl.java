@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> loadAllProducts() {
-        List<Product> products = productDao.loadAllProducts();
+        List<Product> products = productDao.loadAll();
         return converter.convertProductToDto(products);
     }
 

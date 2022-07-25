@@ -27,15 +27,6 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public boolean login(ManagerDto managerDto) {
-        Manager manager = converter.convertManagerToEntity(managerDto);
-
-        boolean result = managerDao.login(manager);
-
-        return result;
-    }
-
-    @Override
     public Long loadIdByEmail(String email) {
         Long id = managerDao.loadIdByEmail(email);
         return id;

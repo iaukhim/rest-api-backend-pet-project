@@ -11,7 +11,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
-public class MySqlTicketDao implements TicketDao {
+public class MySqlTicketDao extends MySqlAbstractDao<Ticket> implements TicketDao {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -19,9 +19,8 @@ public class MySqlTicketDao implements TicketDao {
     }
 
     @Override
-    public List<Ticket> loadAll() {
-        TypedQuery<Ticket> query = entityManager.createQuery("SELECT t FROM Ticket as t", Ticket.class);
-        return query.getResultList();
+    Class<Ticket> getClazz() {
+        return Ticket.class;
     }
 
     @Override
@@ -30,16 +29,6 @@ public class MySqlTicketDao implements TicketDao {
         query.setParameter("userId", userId);
 
         return query.getResultList();
-    }
-
-    @Override
-    public void save(Ticket ticket) {
-        entityManager.persist(ticket);
-    }
-
-    @Override
-    public void update(Ticket ticket) {
-        entityManager.merge(ticket);
     }
 
     @Override
@@ -76,7 +65,7 @@ public class MySqlTicketDao implements TicketDao {
 
     @Override
     public void closeTicket(Long id) {
-        Ticket ticket = entityManager.find(Ticket.class, id);
+        Ticket ticket = findById(id);
         if(ticket == null){
             throw new NoSuchEntityException("No ticket with such id");
         }

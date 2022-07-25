@@ -8,26 +8,28 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 
 @Component
 public class DbInit implements ApplicationRunner {
 
-    @Autowired
     private AccountDao accountDao;
 
-    @Autowired
     private ProductDao productDao;
 
-    @Autowired
     private OwnedProductDao ownedProductDao;
 
-    @Autowired
     private ManagerDao managerDao;
 
-    @Autowired
     private TicketDao ticketDao;
+
+    @Autowired
+    public DbInit(AccountDao accountDao, ProductDao productDao, OwnedProductDao ownedProductDao, ManagerDao managerDao, TicketDao ticketDao) {
+        this.accountDao = accountDao;
+        this.productDao = productDao;
+        this.ownedProductDao = ownedProductDao;
+        this.managerDao = managerDao;
+        this.ticketDao = ticketDao;
+    }
 
     @Transactional
     @Override
@@ -42,7 +44,7 @@ public class DbInit implements ApplicationRunner {
         Product printer = productDao.save(new Product("printer", "LaserJet Pro M28a"));
 
         OwnedProduct ownedLaptop = new OwnedProduct(laptop, "serial-number", accountDao.findById(1L));
-        OwnedProduct ownedProduct = ownedProductDao.saveProduct(ownedLaptop);
+        OwnedProduct ownedProduct = ownedProductDao.save(ownedLaptop);
         OwnedProduct ownedSmartphone = new OwnedProduct();
         ownedSmartphone.setProduct(smartphone);
         ownedSmartphone.setSerialNumber("abc");

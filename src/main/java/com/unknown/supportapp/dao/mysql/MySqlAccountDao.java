@@ -7,7 +7,9 @@ import com.unknown.supportapp.exceptions.NoSuchEntityException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 @Repository
 public class MySqlAccountDao extends MySqlAbstractDao<Account> implements AccountDao {
@@ -19,7 +21,6 @@ public class MySqlAccountDao extends MySqlAbstractDao<Account> implements Accoun
 
     }
 
-
     @Override
     public Class<Account> getClazz() {
         return Account.class;
@@ -29,11 +30,22 @@ public class MySqlAccountDao extends MySqlAbstractDao<Account> implements Accoun
     public boolean logIn(Account account) {
         boolean result = true;
 
-        Query query = entityManager.createQuery("select a  from Account as a WHERE a.email = :email and a.password = :password", Account.class);
-        query.setParameter("email", account.getEmail());
-        query.setParameter("password", account.getPassword());
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Account> criteriaQuery = cb.createQuery(Account.class);
+        Root<Account> accountRoot = criteriaQuery.from(Account.class);
+        TypedQuery<Account> accountTypedQuery = entityManager.createQuery(criteriaQuery.select(accountRoot)
+                .where(cb.equal
+                        (accountRoot.get("email"),
+                                cb.parameter(String.class, "email")
+                        ), cb.and(
+                                cb.equal(accountRoot.get("password"),
+                                        cb.parameter(String.class, "password")
+                                )
+                        )
+                )
+        ).setParameter("email", account.getEmail()).setParameter("password", account.getPassword());
 
-        if (query.getResultList().isEmpty()) {
+        if (accountTypedQuery.getResultList().isEmpty()) {
             result = false;
         }
 
@@ -42,27 +54,32 @@ public class MySqlAccountDao extends MySqlAbstractDao<Account> implements Accoun
 
     @Override
     public Account loadByEmail(String email) {
-        TypedQuery<Account> query = entityManager.createQuery("select a from Account as a where a.email = :email", Account.class);
-        query.setParameter("email", email);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Account> criteriaQuery = cb.createQuery(Account.class);
+        Root<Account> accountRoot = criteriaQuery.from(Account.class);
+        TypedQuery<Account> typedQuery = entityManager.createQuery(criteriaQuery.select(accountRoot)
+                .where(cb.equal
+                                (accountRoot.get("email"),
+                                        cb.parameter(String.class, "email")
+                                )
+                )
+        ).setParameter("email", email);
         try {
-            return query.getSingleResult();
+            return typedQuery.getSingleResult();
         } catch (NoResultException e) {
             throw new NoSuchEntityException("Entity with such email does not exist");
         }
-    }
-    @Override
-    public void save(Account account) {
-        entityManager.persist(account);
     }
 
     @Override
     public boolean checkAccountExistence(String email) {
         boolean result = true;
 
-        TypedQuery<Account> query = entityManager.createQuery("select a from Account as a where a.email = :email", Account.class);
-        query.setParameter("email", email);
-        if (query.getResultList().isEmpty()) {
-            result = false;
+        try {
+            loadByEmail(email);
+        }
+        catch (NoSuchEntityException e){
+            return false;
         }
         return result;
     }
@@ -79,10 +96,5 @@ public class MySqlAccountDao extends MySqlAbstractDao<Account> implements Accoun
         Long id;
         Account account = loadByEmail(email);
         return account.getId();
-    }
-
-    @Override
-    public void update(Account account) {
-        entityManager.merge(account);
     }
 }

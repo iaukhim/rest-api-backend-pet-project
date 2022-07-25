@@ -9,11 +9,6 @@ public interface AccountDao extends AbstractDao<Account>{
 
     Account loadByEmail (String Email);
 
-    void update (Account account);
-
-    void save (Account account);
-
-
     boolean logIn(Account account);
 
     boolean checkAccountExistence(String email);

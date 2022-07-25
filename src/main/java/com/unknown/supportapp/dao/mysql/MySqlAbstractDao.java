@@ -18,11 +18,7 @@ public abstract class MySqlAbstractDao<T> implements AbstractDao<T> {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Override
-    public Class<T> getClazz() {
-        return null;
-    }
-
+    abstract Class<T> getClazz();
     @Override
     public List<T> loadAll() {
         CriteriaQuery<T> query = entityManager.getCriteriaBuilder().createQuery(getClazz());
@@ -43,6 +39,19 @@ public abstract class MySqlAbstractDao<T> implements AbstractDao<T> {
         } catch (Exception e) {
             throw new NoSuchEntityException(e);
         }
+    }
+
+    @Override
+    public T update(T entity) {
+        T mergedEntity = entityManager.merge(entity);
+        entityManager.detach(mergedEntity);
+        return mergedEntity;
+    }
+
+    @Override
+    public T save(T entity) {
+        entityManager.persist(entity);
+        return entity;
     }
 }
 

@@ -1,30 +1,29 @@
 package com.unknown.supportapp.services.mail;
 
-
-
 import com.sun.mail.smtp.SMTPSendFailedException;
+import com.unknown.supportapp.config.MailProps;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.util.Properties;
 
+@DependsOn("mailProps")
 @Service
 public class MailService {
-
+    private MailProps mailProps;
     private Properties properties;
 
-    public MailService() {
+    @Autowired
+    public MailService(MailProps mailProps) {
+        this.mailProps = mailProps;
         properties = new Properties();
-        try {
-            properties.load(this.getClass().getClassLoader().getResourceAsStream("mail-service-settings.properties"));
-        } catch (IOException e) {
-            throw new RuntimeException("Error occurred, trying to load mail service properties", e);
-        }
+        properties.putAll(mailProps.getProp());
 
     }
 
@@ -49,7 +48,8 @@ public class MailService {
             randomedCode = RandomStringUtils.randomAlphanumeric(6);
             message.setText(randomedCode);
             Transport.send(message);
-        } catch (SMTPSendFailedException e) {
+        }
+        catch (SMTPSendFailedException e) {
             System.out.println("fail in mail");
         } catch (AddressException e) {
             e.printStackTrace();

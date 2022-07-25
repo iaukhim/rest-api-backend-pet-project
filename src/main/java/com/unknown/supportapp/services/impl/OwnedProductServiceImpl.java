@@ -38,7 +38,7 @@ public class OwnedProductServiceImpl implements OwnedProductService {
     @Override
     public void saveProduct(OwnedProductDto productDto) {
         OwnedProduct ownedProduct = converter.convertOwnedProductToEntity(productDto);
-        ownedProductDao.saveProduct(ownedProduct);
+        ownedProductDao.save(ownedProduct);
     }
     @Override
     public boolean changeSerial(String oldValue, String newValue) {
@@ -62,7 +62,7 @@ public class OwnedProductServiceImpl implements OwnedProductService {
 
     @Override
     public OwnedProductDto loadById(Long id) {
-        OwnedProduct entity = ownedProductDao.loadById(id);
+        OwnedProduct entity = ownedProductDao.findById(id);
         OwnedProductDto productDto = converter.convertOwnedProductToDto(entity);
         return productDto;
     }

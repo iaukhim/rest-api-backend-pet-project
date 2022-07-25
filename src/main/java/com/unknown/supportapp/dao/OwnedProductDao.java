@@ -5,19 +5,13 @@ import com.unknown.supportapp.entities.OwnedProduct;
 
 import java.util.List;
 
-public interface OwnedProductDao {
-
-    OwnedProduct saveProduct(OwnedProduct product);
+public interface OwnedProductDao extends AbstractDao<OwnedProduct>{
 
     List<OwnedProduct> loadUsersProducts (String email);
-
-    void deleteById(Long id);
 
     boolean changeSerial (String oldValue, String newValue);
 
     boolean checkSerial (String serialNumber);
-
-    OwnedProduct loadById(Long id);
 
     String loadModelById(Long id);
 }

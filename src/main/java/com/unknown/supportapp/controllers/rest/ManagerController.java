@@ -16,17 +16,6 @@ public class ManagerController {
         this.managerService = managerService;
     }
 
-
-    @GetMapping("login")
-    public boolean login(@RequestHeader String email, @RequestHeader String password){
-        ManagerDto managerDto = new ManagerDto();
-        managerDto.setEmail(email);
-        managerDto.setPassword(password);
-
-        return managerService.login(managerDto);
-
-    }
-
     @GetMapping("id/by-email/{email}")
     public Long loadIdByEmail(@PathVariable String email){
         return managerService.loadIdByEmail(email);

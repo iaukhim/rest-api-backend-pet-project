@@ -30,15 +30,6 @@ public class AccountController {
        return accountService.loadByEmail(email);
     }
 
-    @GetMapping("login")
-    public boolean login(@RequestHeader String email, @RequestHeader String password){
-        AccountDto accountDto = new AccountDto();
-        accountDto.setEmail(email);
-        accountDto.setPassword(password);
-
-        boolean result = accountService.logIn(accountDto);
-        return result;
-    }
 
     @GetMapping("/confirmation-code")
     public String sendConfirmationCode(@RequestParam String email){

@@ -7,9 +7,12 @@ import com.unknown.supportapp.exceptions.NoSuchEntityException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 @Repository
-public class MySqlManagerDao implements ManagerDao {
+public class MySqlManagerDao extends MySqlAbstractDao<Manager> implements ManagerDao {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -36,16 +39,22 @@ public class MySqlManagerDao implements ManagerDao {
     }
 
     @Override
-    public Manager save(Manager manager) {
-        return entityManager.merge(manager);
+    Class<Manager> getClazz() {
+        return Manager.class;
     }
 
     @Override
     public Long loadIdByEmail(String email) {
         Long id;
 
-        TypedQuery<Long> query = entityManager.createQuery("select m.id from Manager as m WHERE m.email = :email", Long.class);
-        query.setParameter("email", email);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = cb.createQuery(Long.class);
+        Root<Manager> root = criteria.from(Manager.class);
+        TypedQuery<Long> query = entityManager.createQuery(criteria.select(root.get("id"))
+                .where(cb.equal
+                        (root.get("email"), cb.parameter(String.class, "email"))
+                )
+        ).setParameter("email", email);
         try {
             id = query.getSingleResult();
         } catch (NoResultException e) {

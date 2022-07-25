@@ -69,20 +69,6 @@ public class AccountServiceImpl implements AccountService {
         return converter.convertAccountToDto(entities);
     }
 
-
-    @Override
-    public boolean logIn(AccountDto accountDto) {
-        boolean result = accountDao.logIn(new Account(accountDto.getEmail(), accountDto.getPassword()));
-        return result;
-    }
-
-
-    @Override
-    public String registration(String email) {
-        String message = mailService.sendConfirmationEmail(email);
-        return message;
-    }
-
     @Override
     public boolean checkExistence(String email) {
         boolean result = accountDao.checkAccountExistence(email);

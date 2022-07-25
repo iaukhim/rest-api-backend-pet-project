@@ -19,10 +19,6 @@ public interface AccountService {
 
     void delete(Long id);
 
-    boolean logIn(AccountDto accountDto);
-
-    String registration(String email);
-
     boolean checkExistence(String email);
 
     String confirmationCode(String email);

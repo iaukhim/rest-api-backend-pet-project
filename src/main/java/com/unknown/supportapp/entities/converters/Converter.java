@@ -27,16 +27,23 @@ public class Converter {
     public Converter(PersistenceUtil persistenceUtil, ModelMapper modelMapper) {
         this.persistenceUtil = persistenceUtil;
         this.modelMapper = modelMapper;
+
+        TypeMap<OwnedProduct, OwnedProductDto> typeMapOwnedProduct = modelMapper.emptyTypeMap(OwnedProduct.class, OwnedProductDto.class);
+        typeMapOwnedProduct.addMappings(mapping -> mapping.skip(OwnedProductDto::setOwner)).implicitMappings();
+
+        TypeMap<Ticket, TicketDto> typeMapTickets = modelMapper.emptyTypeMap(Ticket.class, TicketDto.class);
+        typeMapTickets.addMappings(mapping -> mapping.skip(TicketDto::setManager));
+        typeMapTickets.addMappings(mapping -> mapping.skip(TicketDto::setStarter)).implicitMappings();
     }
 
-    public AccountDto convertAccountToDto(Account entity) {
+    public AccountDto convertAccountToDto(Account entity, boolean skipCollections) {
         TypeMap<Account, AccountDto> typeMap = modelMapper.typeMap(Account.class, AccountDto.class);
 
-        if (!persistenceUtil.isLoaded(entity, "ownedProducts")) {
+        if (!persistenceUtil.isLoaded(entity, "ownedProducts") || skipCollections) {
             typeMap.addMappings(mapping -> mapping.skip(AccountDto::setOwnedProducts));
         }
 
-        if (!persistenceUtil.isLoaded(entity, "tickets")) {
+        if (!persistenceUtil.isLoaded(entity, "tickets") || skipCollections) {
             typeMap.addMappings(mapping -> mapping.skip(AccountDto::setTickets));
         }
         AccountDto accountDto = modelMapper.map(entity, AccountDto.class);
@@ -46,10 +53,10 @@ public class Converter {
         return accountDto;
     }
 
-    public List<AccountDto> convertAccountToDto(List<Account> entityList) {
+    public List<AccountDto> convertAccountToDto(List<Account> entityList, boolean skipCollections) {
         List<AccountDto> dtos = new ArrayList<>();
         for (Account entity : entityList) {
-            dtos.add(convertAccountToDto(entity));
+            dtos.add(convertAccountToDto(entity, skipCollections));
         }
         return dtos;
     }
@@ -62,10 +69,10 @@ public class Converter {
         return modelMapper.map(dto, Manager.class);
     }
 
-    public ManagerDto convertManagerToDto(Manager entity) {
+    public ManagerDto convertManagerToDto(Manager entity, boolean skipCollections) {
         TypeMap<Manager, ManagerDto> typeMap = modelMapper.typeMap(Manager.class, ManagerDto.class);
 
-        if (!persistenceUtil.isLoaded(entity, "managedTickets")) {
+        if (!persistenceUtil.isLoaded(entity, "managedTickets") || skipCollections) {
             typeMap.addMappings(mapping -> mapping.skip(ManagerDto::setManagedTickets));
         }
         ManagerDto managerDto = modelMapper.map(entity, ManagerDto.class);
@@ -78,7 +85,10 @@ public class Converter {
     }
 
     public OwnedProductDto convertOwnedProductToDto(OwnedProduct entity) {
-        return modelMapper.map(entity, OwnedProductDto.class);
+        OwnedProductDto dto = new OwnedProductDto();
+        modelMapper.map(entity, dto);
+        dto.setOwner(convertAccountToDto(entity.getOwner(), true));
+        return dto;
     }
 
     public List<OwnedProductDto> convertOwnedProductToDto(List<OwnedProduct> entityList) {
@@ -114,7 +124,10 @@ public class Converter {
     }
 
     public TicketDto convertTicketToDto(Ticket entity) {
-       return modelMapper.map(entity, TicketDto.class);
+        TicketDto ticketDto = modelMapper.map(entity, TicketDto.class);
+        ticketDto.setStarter(convertAccountToDto(entity.getStarter(), true));
+        ticketDto.setManager(convertManagerToDto(entity.getManager(), true));
+        return ticketDto;
     }
 
     public List<TicketDto> convertTicketToDto(List<Ticket> entityList) {

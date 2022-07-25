@@ -1,6 +1,7 @@
 package com.unknown.supportapp.dto.manager;
 
 import com.unknown.supportapp.dto.ticket.TicketDto;
+import com.unknown.supportapp.entities.Ticket;
 import lombok.*;
 
 import java.util.List;
@@ -17,8 +18,15 @@ public class ManagerDto {
 
     private String password;
 
+    private String role;
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<TicketDto> managedTickets;
+
+    public void manageTicket(TicketDto ticket){
+        ticket.setManager(this);
+        managedTickets.add(ticket);
+    }
 
 }

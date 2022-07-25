@@ -53,20 +53,20 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto loadByEmail(String email) {
         Account account = accountDao.loadByEmail(email);
 
-        AccountDto accountDto = converter.convertAccountToDto(account);
+        AccountDto accountDto = converter.convertAccountToDto(account, false);
         return accountDto;
     }
 
     @Override
     public AccountDto loadById(Long id) {
         Account account = accountDao.findById(id);
-        return converter.convertAccountToDto(account);
+        return converter.convertAccountToDto(account, false);
     }
 
     @Override
     public List<AccountDto> loadAll() {
         List<Account> entities = accountDao.loadAll();
-        return converter.convertAccountToDto(entities);
+        return converter.convertAccountToDto(entities, false);
     }
 
     @Override

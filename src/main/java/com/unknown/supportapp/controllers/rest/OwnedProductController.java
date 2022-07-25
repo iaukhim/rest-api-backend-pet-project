@@ -34,7 +34,8 @@ public class OwnedProductController {
 
     @GetMapping("/{id}")
     public OwnedProductDto getById(@PathVariable Long id){
-        return ownedProductService.loadById(id);
+        OwnedProductDto ownedProductDto = ownedProductService.loadById(id);
+        return ownedProductDto;
     }
 
     @GetMapping("/{id}/model")

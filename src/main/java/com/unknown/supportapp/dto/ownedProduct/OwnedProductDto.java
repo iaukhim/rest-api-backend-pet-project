@@ -1,6 +1,11 @@
 package com.unknown.supportapp.dto.ownedProduct;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.unknown.supportapp.dto.acccount.AccountDto;
+import com.unknown.supportapp.dto.product.ProductDto;
+import com.unknown.supportapp.dto.serializers.CustomAccountSerializer;
+import com.unknown.supportapp.entities.Product;
 import lombok.*;
 
 
@@ -11,23 +16,13 @@ public class OwnedProductDto {
 
     private Long id;
 
-    private Long ownerId;
-
-    private String type;
-
-    private String model;
-
-    private String serialNumber;
-
+    @JsonSerialize(using = CustomAccountSerializer.class)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private AccountDto owner;
 
-    public OwnedProductDto(Long id, Long ownerId, String type, String model, String serialNumber) {
-        this.id = id;
-        this.ownerId = ownerId;
-        this.type = type;
-        this.model = model;
-        this.serialNumber = serialNumber;
-    }
+    private String serialNumber;
+
+    private ProductDto product;
+
 }

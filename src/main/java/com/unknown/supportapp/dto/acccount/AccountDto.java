@@ -1,12 +1,16 @@
 package com.unknown.supportapp.dto.acccount;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.unknown.supportapp.dao.OwnedProductDao;
 import com.unknown.supportapp.dto.ownedProduct.OwnedProductDto;
 import com.unknown.supportapp.dto.ticket.TicketDto;
+import com.unknown.supportapp.entities.OwnedProduct;
+import com.unknown.supportapp.entities.Ticket;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -28,6 +32,8 @@ public class AccountDto {
     private String surname;
 
     private String phoneNumber;
+
+    private String role;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -55,6 +61,16 @@ public class AccountDto {
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public void addOwnedProduct(OwnedProductDto ownedProduct){
+        ownedProduct.setOwner(this);
+        ownedProducts.add(ownedProduct);
+    }
+
+    public void addTicket(TicketDto ticket){
+        ticket.setStarter(this);
+        tickets.add(ticket);
     }
 
 }

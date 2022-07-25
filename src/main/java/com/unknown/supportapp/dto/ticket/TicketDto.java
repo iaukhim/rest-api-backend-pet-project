@@ -2,6 +2,10 @@ package com.unknown.supportapp.dto.ticket;
 
 import com.unknown.supportapp.dto.acccount.AccountDto;
 import com.unknown.supportapp.dto.manager.ManagerDto;
+import com.unknown.supportapp.dto.ownedProduct.OwnedProductDto;
+import com.unknown.supportapp.entities.Account;
+import com.unknown.supportapp.entities.Manager;
+import com.unknown.supportapp.entities.OwnedProduct;
 import lombok.*;
 
 import javax.persistence.FetchType;
@@ -14,11 +18,7 @@ public class TicketDto {
 
     private Long id;
 
-    private Long starterId;
-
-    private Long managerId;
-
-    private Long productId;
+    private OwnedProductDto ownedProduct;
 
     private String theme;
 
@@ -28,13 +28,9 @@ public class TicketDto {
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne
-    @JoinColumn(name = "starter_id", insertable = false, updatable = false)
     private AccountDto starter;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manager_id", insertable = false, updatable = false)
     private ManagerDto manager;
 }

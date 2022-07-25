@@ -3,6 +3,7 @@ package com.unknown.supportapp.entities;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -28,12 +29,12 @@ public class Account extends AbstractEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OwnedProduct> ownedProducts = new java.util.ArrayList<>();
+    private List<OwnedProduct> ownedProducts = new ArrayList<>();
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(mappedBy = "starter", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ticket> tickets = new java.util.ArrayList<>();
+    private List<Ticket> tickets = new ArrayList<>();
 
     public Account(String email, String password) {
         this.email = email;

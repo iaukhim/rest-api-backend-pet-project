@@ -23,7 +23,7 @@ public abstract class CausedByUserException extends RuntimeException{
     }
 
     public HttpStatus getHttpStatus() {
-        return HttpStatus.INTERNAL_SERVER_ERROR;
+        return HttpStatus.BAD_REQUEST;
     }
 
 }

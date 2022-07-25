@@ -1,6 +1,8 @@
 package com.unknown.supportapp.exceptions.handlers;
 
+import com.sun.mail.smtp.SMTPSendFailedException;
 import com.unknown.supportapp.exceptions.CausedByUserException;
+import com.unknown.supportapp.exceptions.MailServiceException;
 import com.unknown.supportapp.response.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,6 @@ public class ControllerAdviceExceptionHandler {
 
     public ControllerAdviceExceptionHandler() {
     }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Response> handleException(Exception e, HttpServletRequest request){
         Response response = new Response(new Date(System.currentTimeMillis()), HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), request.getRequestURI());

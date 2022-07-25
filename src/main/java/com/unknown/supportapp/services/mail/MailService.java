@@ -1,7 +1,7 @@
 package com.unknown.supportapp.services.mail;
 
-import com.sun.mail.smtp.SMTPSendFailedException;
 import com.unknown.supportapp.config.MailProps;
+import com.unknown.supportapp.exceptions.MailServiceException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -27,7 +27,7 @@ public class MailService {
 
     }
 
-    public String sendConfirmationEmail(String receiverEmail) {
+    public String sendConfirmationEmail(String receiverEmail){
         String randomedCode = null;
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
@@ -49,12 +49,10 @@ public class MailService {
             message.setText(randomedCode);
             Transport.send(message);
         }
-        catch (SMTPSendFailedException e) {
-            System.out.println("fail in mail");
-        } catch (AddressException e) {
-            e.printStackTrace();
+        catch (AddressException e) {
+            throw new MailServiceException("Wrong email format", e);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return randomedCode;
     }
